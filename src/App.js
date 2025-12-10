@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, Link, useParams, useN
 import "./App.css";
 import QRCode from "react-qr-code";
 
+
 // Simple JWT storage
 function useAuth() {
   const [token, setToken] = React.useState(localStorage.getItem("jwt") || "");
@@ -31,7 +32,7 @@ function LoginPage() {
     setError("");
     if (isSignup) {
       // Signup
-      const res = await fetch("/api/users/", {
+      const res = await fetch(`/api/users/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password, email }),
@@ -42,7 +43,7 @@ function LoginPage() {
       }
     }
     // Login
-    const res = await fetch("/api/token/", {
+    const res = await fetch(`/api/token/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
@@ -87,7 +88,7 @@ function RecipesPage() {
   const loadRecipes = React.useCallback(() => {
     setLoading(true);
     setError("");
-    fetch("/api/grocery-lists/", {
+    fetch(`/api/grocery-lists/`, {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => res.json())
@@ -213,14 +214,13 @@ function IngredientsPage() {
   const { token } = useAuth();
   const [items, setItems] = React.useState([]);
   React.useEffect(() => {
-    fetch("/api/grocery-lists/", {
+    fetch(`/api/grocery-lists/`, {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => res.json())
       .then(lists => {
         if (lists.length === 0) return setItems([]);
         const listId = lists[0].id;
-        // Use new endpoint
         fetch(`/api/grocery_list_ingredients/?grocery_list_id=${listId}`, {
           headers: { Authorization: `Bearer ${token}` }
         })
@@ -235,21 +235,95 @@ function IngredientsPage() {
       });
   }, [token]);
   const [checked, setChecked] = React.useState({});
+
+  // Category definitions and fun colors
+  const categories = [
+    'canned goods', 'dairy and eggs', 'frozen foods', 'grains', 'meat',
+    'oils and fats', 'produce', 'sauces and condiments', 'spices and herbs', 'stocks'
+  ];
+  const categoryColors = {
+    'canned goods': '#ffe082', // light yellow
+    'dairy and eggs': '#e1bee7', // lavender
+    'frozen foods': '#b3e5fc', // icy blue
+    'grains': '#fff9c4', // pale yellow
+    'meat': '#ffccbc', // light salmon
+    'oils and fats': '#f8bbd0', // pink
+    'produce': '#c8e6c9', // green
+    'sauces and condiments': '#d7ccc8', // beige
+    'spices and herbs': '#dcedc8', // mint
+    'stocks': '#ffe0b2', // orange
+  };
+
+  // Group items by category
+  const grouped = {};
+  items.forEach(item => {
+    const cat = item.ingredient_category || 'Other';
+    if (!grouped[cat]) grouped[cat] = [];
+    grouped[cat].push(item);
+  });
+
   return (
     <div className="container">
       <div className="main pageContainer">
         <h2>Ingredients Needed</h2>
-        <div>
-          {items.map(item => (
-            <div key={item.ingredient_id + "_" + item.unit} style={{ marginBottom: "0.5em" }}>
-              <input
-                type="checkbox"
-                checked={!!checked[item.ingredient_id + "_" + item.unit]}
-                onChange={() => setChecked(c => ({ ...c, [item.ingredient_id + "_" + item.unit]: !c[item.ingredient_id + "_" + item.unit] }))}
-              />
-              {item.ingredient_name} {item.quantity} {item.unit}
-            </div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "1em" }}>
+          {categories.map(cat => (
+            grouped[cat] && grouped[cat].length > 0 && (
+              <div
+                key={cat}
+                style={{
+                  background: categoryColors[cat] || '#f5f5f5',
+                  borderRadius: '8px',
+                  padding: '1em',
+                  marginBottom: '1em',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                  width: '350px', // fixed width for all sections
+                  minWidth: '350px',
+                  maxWidth: '350px',
+                  flex: '0 0 350px'
+                }}
+              >
+                <h3 style={{ marginTop: 0 }}>{cat.charAt(0).toUpperCase() + cat.slice(1)}</h3>
+                {grouped[cat].map(item => (
+                  <div key={item.ingredient_id + "_" + item.unit} style={{ marginBottom: "0.5em" }}>
+                    <input
+                      type="checkbox"
+                      checked={!!checked[item.ingredient_id + "_" + item.unit]}
+                      onChange={() => setChecked(c => ({ ...c, [item.ingredient_id + "_" + item.unit]: !c[item.ingredient_id + "_" + item.unit] }))}
+                    />
+                    {item.ingredient_name} {item.quantity} {item.unit}
+                  </div>
+                ))}
+              </div>
+            )
           ))}
+          {/* Show uncategorized items if any */}
+          {grouped['Other'] && grouped['Other'].length > 0 && (
+            <div
+              style={{
+                background: '#f5f5f5',
+                borderRadius: '8px',
+                padding: '1em',
+                marginBottom: '1em',
+                width: '350px',
+                minWidth: '350px',
+                maxWidth: '350px',
+                flex: '0 0 350px'
+              }}
+            >
+              <h3>Other</h3>
+              {grouped['Other'].map(item => (
+                <div key={item.ingredient_id + "_" + item.unit} style={{ marginBottom: "0.5em" }}>
+                  <input
+                    type="checkbox"
+                    checked={!!checked[item.ingredient_id + "_" + item.unit]}
+                    onChange={() => setChecked(c => ({ ...c, [item.ingredient_id + "_" + item.unit]: !c[item.ingredient_id + "_" + item.unit] }))}
+                  />
+                  {item.ingredient_name} {item.quantity} {item.unit}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -260,7 +334,7 @@ function QRRecipePage({ recipeId, servings }) {
   const { token } = useAuth();
   const navigate = useNavigate();
   React.useEffect(() => {
-    fetch("/api/add_recipe_to_grocery_list/", {
+    fetch(`/api/add_recipe_to_grocery_list/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -293,7 +367,7 @@ function QRTestPage() {
   const [recipes, setRecipes] = React.useState([]);
 
   React.useEffect(() => {
-    fetch("/api/recipes/", {
+    fetch(`/api/recipes/`, {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => res.json())
@@ -307,8 +381,16 @@ function QRTestPage() {
   }, [token]);
 
   // Generate QR code data (e.g., a URL or JSON payload)
-  const getQrValue = (recipe) =>
-    `http://192.168.4.23:3000/qr/${recipe.id}/1`;
+  const getQrValue = (recipe) => {
+    let origin = window.location.origin;
+    if (window.location.hostname === "localhost") {
+      // Replace with your LAN IP address
+      origin = origin.replace("localhost", process.env.REACT_APP_IP);
+    }
+    const value = `${origin}/qr/${recipe.id}/1`;
+    console.log("QR Value:", value);
+    return value;
+  };
 
   return (
     <div className="container">
