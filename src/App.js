@@ -253,6 +253,19 @@ function IngredientsPage() {
     'spices and herbs': '#dcedc8', // mint
     'stocks': '#ffe0b2', // orange
   };
+  const categoryEmojis = {
+    'canned goods': '🥫',
+    'dairy and eggs': '🥛',
+    'frozen foods': '🧊',
+    'grains': '🌾',
+    'meat': '🥩',
+    'oils and fats': '🛢️',
+    'produce': '🍎',
+    'sauces and condiments': '🧂',
+    'spices and herbs': '🌿',
+    'stocks': '🍲',
+    'Other': '🛒'
+  };
 
   // Group items by category
   const grouped = {};
@@ -283,7 +296,9 @@ function IngredientsPage() {
                   flex: '0 0 350px'
                 }}
               >
-                <h3 style={{ marginTop: 0 }}>{cat.charAt(0).toUpperCase() + cat.slice(1)}</h3>
+                <h3 style={{ marginTop: 0 }}>
+                  {categoryEmojis[cat] ? `${categoryEmojis[cat]} ` : ''}{cat.charAt(0).toUpperCase() + cat.slice(1)}
+                </h3>
                 {grouped[cat].map(item => (
                   <div key={item.ingredient_id + "_" + item.unit} style={{ marginBottom: "0.5em" }}>
                     <input
@@ -311,7 +326,7 @@ function IngredientsPage() {
                 flex: '0 0 350px'
               }}
             >
-              <h3>Other</h3>
+              <h3>{categoryEmojis['Other']} Other</h3>
               {grouped['Other'].map(item => (
                 <div key={item.ingredient_id + "_" + item.unit} style={{ marginBottom: "0.5em" }}>
                   <input
