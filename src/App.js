@@ -275,22 +275,34 @@ function IngredientsPage() {
     grouped[cat].push(item);
   });
 
+  // Responsive: wrap category groups in a scrollable flex container on mobile
   return (
     <div className="container">
       <div className="main pageContainer">
         <h2>Ingredients Needed</h2>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "1em" }}>
+        <div
+          className={
+            "ingredientsGroupScroll"
+          }
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "1em",
+            overflowX: "auto"
+          }}
+        >
           {categories.map(cat => (
             grouped[cat] && grouped[cat].length > 0 && (
               <div
                 key={cat}
+                className="categoryCard"
                 style={{
                   background: categoryColors[cat] || '#f5f5f5',
                   borderRadius: '8px',
                   padding: '1em',
                   marginBottom: '1em',
                   boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-                  width: '350px', // fixed width for all sections
+                  width: '350px',
                   minWidth: '350px',
                   maxWidth: '350px',
                   flex: '0 0 350px'
@@ -315,6 +327,7 @@ function IngredientsPage() {
           {/* Show uncategorized items if any */}
           {grouped['Other'] && grouped['Other'].length > 0 && (
             <div
+              className="categoryCard"
               style={{
                 background: '#f5f5f5',
                 borderRadius: '8px',
@@ -403,7 +416,6 @@ function QRTestPage() {
       origin = origin.replace("localhost", process.env.REACT_APP_IP);
     }
     const value = `${origin}/groc/qr/${recipe.id}/1`;
-    console.log("QR Value:", value);
     return value;
   };
 
@@ -411,17 +423,17 @@ function QRTestPage() {
     <div className="container">
       <div className="main pageContainer">
         <h2>QR Code Test Page</h2>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "2em" }}>
+        <div className="qrRecipeCardContainer">
           {recipes.map(recipe => (
-            <div key={recipe.id} style={{ border: "1px solid #ccc", padding: "1em" }}>
-              <div><strong>{recipe.title}</strong></div>
-              <QRCode
-                value={getQrValue(recipe)}
-                size={150}
-              />
-              <div>
-                <Link to={`/qr/${recipe.id}/1`} className="txtlink">Add to Grocery List</Link>
-              </div>
+            <div key={recipe.id} className="qrRecipeCard">
+              <div className="qrRecipeCard-title">{recipe.title}</div>
+              <Link to={`/qr/${recipe.id}/1`} style={{ display: "inline-block" }}>
+                <QRCode
+                  value={getQrValue(recipe)}
+                  size={150}
+                  style={{ cursor: "pointer" }}
+                />
+              </Link>
             </div>
           ))}
         </div>
