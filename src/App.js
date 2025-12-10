@@ -387,7 +387,7 @@ function QRTestPage() {
       // Replace with your LAN IP address
       origin = origin.replace("localhost", process.env.REACT_APP_IP);
     }
-    const value = `${origin}/qr/${recipe.id}/1`;
+    const value = `${origin}/groc/qr/${recipe.id}/1`;
     console.log("QR Value:", value);
     return value;
   };
@@ -451,7 +451,7 @@ function Navbar({ token, logout }) {
 function App() {
   const auth = useAuth();
   return (
-    <Router>
+    <Router basename="/groc">
       <Navbar token={auth.token} logout={auth.logout} />
       <Routes>
         <Route path="/recipes" element={
