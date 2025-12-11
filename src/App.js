@@ -242,16 +242,16 @@ function IngredientsPage() {
     'oils and fats', 'produce', 'sauces and condiments', 'spices and herbs', 'stocks'
   ];
   const categoryColors = {
-    'canned goods': '#ffe082', // light yellow
-    'dairy and eggs': '#e1bee7', // lavender
-    'frozen foods': '#b3e5fc', // icy blue
-    'grains': '#fff9c4', // pale yellow
-    'meat': '#ffccbc', // light salmon
-    'oils and fats': '#f8bbd0', // pink
-    'produce': '#c8e6c9', // green
-    'sauces and condiments': '#d7ccc8', // beige
-    'spices and herbs': '#dcedc8', // mint
-    'stocks': '#ffe0b2', // orange
+    'canned goods': '#ffd6d6', // pastel red/pink (🥫)
+    'dairy and eggs': '#f9fbe7', // pastel cream (🥛)
+    'frozen foods': '#e0f7fa', // pastel blue (🧊)
+    'grains': '#fff9c4', // pastel yellow (🌾)
+    'meat': '#f8bbd0', // pastel rose (🥩)
+    'oils and fats': '#fff8e1', // pastel gold (🛢️)
+    'produce': '#d0f8ce', // pastel green (🥦)
+    'sauces and condiments': '#ffe0b2', // pastel orange (🧂)
+    'spices and herbs': '#e6ee9c', // pastel lime (🌿)
+    'stocks': '#ffe4ec', // pastel pink (🍲)
   };
   const categoryEmojis = {
     'canned goods': '🥫',
@@ -260,7 +260,7 @@ function IngredientsPage() {
     'grains': '🌾',
     'meat': '🥩',
     'oils and fats': '🛢️',
-    'produce': '🍎',
+    'produce': '🥦',
     'sauces and condiments': '🧂',
     'spices and herbs': '🌿',
     'stocks': '🍲',
