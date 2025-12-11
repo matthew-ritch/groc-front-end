@@ -10,7 +10,7 @@
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-qr-code": "^2.0.18",
-    "react-router-dom": "^7.10.1",
+    "react-router-dom": "^6.30.2",
     "react-scripts": "^5.0.1",
     "web-vitals": "^2.1.4"
   },
@@ -19,6 +19,14 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "^react-router-dom$": "react-router-dom"
+    },
+    "transformIgnorePatterns": [
+      "node_modules/(?!(react-router|react-router-dom)/)"
+    ]
   },
   "eslintConfig": {
     "extends": [
