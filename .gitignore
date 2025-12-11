@@ -24,3 +24,4 @@ yarn-error.log*
 
 # environments
 .env
+notes.txt
